@@ -1677,19 +1677,31 @@
         });
 
         // Live session buttons
-        live5pm.addEventListener('click', function(e) {
-            e.preventDefault();
-            // Replace with your actual M3U8 or YouTube live link
-            const liveLink = "https://d133w6ldrek1er.cloudfront.net/out/v1/f15d86916b1f404baeb09967b920d86a/index_4.m3u8";
-            playVideo(liveLink);
-        });
+        document.getElementById('live5pm').addEventListener('click', function(e) {
+  e.preventDefault();
+  const liveLink = "https://d133w6ldrek1er.cloudfront.net/out/v1/f15d86916b1f404baeb09967b920d86a/index_4.m3u8";
+  playVideo(liveLink);
+});
 
-        live8pm.addEventListener('click', function(e) {
-            e.preventDefault();
-            // Replace with your actual M3U8 or YouTube live link
-            const liveLink = "https://www.youtube.com/live/example2"; // or "your-m3u8-link.m3u8"
-            playVideo(liveLink);
-        });
+function playVideo(url) {
+  const video = document.getElementById('video-player');
+
+  if (Hls.isSupported()) {
+    const hls = new Hls();
+    hls.loadSource(url);
+    hls.attachMedia(video);
+    hls.on(Hls.Events.MANIFEST_PARSED, function () {
+      video.play();
+    });
+  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    video.src = url;
+    video.addEventListener('loadedmetadata', function () {
+      video.play();
+    });
+  } else {
+    alert("This browser does not support M3U8 playback.");
+  }
+}
 
         // Navigation Links
         document.getElementById('home-link').addEventListener('click', function(e) {
